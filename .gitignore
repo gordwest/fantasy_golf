@@ -1,0 +1,7 @@
+.DS_Store
+__pycache__/
+*.py[cod]
+
+.secrets.toml
+app/.streamlit/secrets.toml
+app/.streamlit/secrets.local.toml
