@@ -1,9 +1,9 @@
 name: Run Leaderboard Export
 
 on:
-  schedule:
-    - cron: '0,10,20,30,40,50 * * * *'
-  workflow_dispatch: {}
+  # schedule:
+  #   - cron: '*/20 * * * *'
+  # workflow_dispatch: {}
 
 jobs:
   export_leaderboard:
