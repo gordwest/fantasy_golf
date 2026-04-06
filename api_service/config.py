@@ -1,7 +1,7 @@
+from __future__ import annotations
 import os
 import tomllib
 from pathlib import Path
-from __future__ import annotations
 
 
 ROOT_DIR = Path(__file__).resolve().parent

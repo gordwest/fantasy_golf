@@ -1,7 +1,6 @@
 import requests
 from snowflake.snowpark import Session
-
-from settings import get_rapidapi_config, get_snowflake_config
+from config import get_rapidapi_config, get_snowflake_config
 
 RAPIDAPI_CONFIG = get_rapidapi_config()
 BASE_URL = RAPIDAPI_CONFIG["base_url"]

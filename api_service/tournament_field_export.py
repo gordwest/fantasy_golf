@@ -1,6 +1,6 @@
 import pandas as pd
 
-from api_service.export_shared import (
+from export_shared import (
     BASE_URL,
     TARGET_DATABASE,
     TARGET_SCHEMA,
