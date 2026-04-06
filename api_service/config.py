@@ -20,8 +20,8 @@ LOCAL_SECRETS = load_local_secrets()
 
 
 def _get_nested_secret(section: str, key: str, env_var: str, default: str | None = None) -> str | None:
-    section_values = LOCAL_SECRETS.get(section, {})
-    value = section_values.get(key) or os.getenv(env_var) or default
+    # Check for direct env var name in TOML (flat structure)
+    value = LOCAL_SECRETS.get(env_var) or os.getenv(env_var) or default
     return value
 
 
