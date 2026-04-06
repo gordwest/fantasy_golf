@@ -2,8 +2,7 @@ name: Run Leaderboard Export
 
 on:
   schedule:
-    - cron: '0,10,20,30,40,50 12-23 * * THU,FRI,SAT,SUN'
-    - cron: '0,10,20,30,40,50 0-4 * * FRI,SAT,SUN,MON'
+    - cron: '0,10,20,30,40,50 * * * *'
   workflow_dispatch: {}
 
 jobs:
