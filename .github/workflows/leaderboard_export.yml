@@ -1,0 +1,38 @@
+name: Run Leaderboard Export
+
+on:
+  schedule:
+    - cron: '0,10,20,30,40,50 12-23 * * THU,FRI,SAT,SUN'
+    - cron: '0,10,20,30,40,50 0-4 * * FRI,SAT,SUN,MON'
+  workflow_dispatch: {}
+
+jobs:
+  export_leaderboard:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install pandas requests snowflake-snowpark-python
+
+      - name: Run leaderboard export
+        env:
+          RAPIDAPI_KEY: ${{ secrets.RAPIDAPI_KEY }}
+          RAPIDAPI_HOST: ${{ secrets.RAPIDAPI_HOST }}
+          RAPIDAPI_BASE_URL: ${{ secrets.RAPIDAPI_BASE_URL }}
+          SNOWFLAKE_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT }}
+          SNOWFLAKE_USER: ${{ secrets.SNOWFLAKE_USER }}
+          SNOWFLAKE_PASSWORD: ${{ secrets.SNOWFLAKE_PASSWORD }}
+          SNOWFLAKE_WAREHOUSE: ${{ secrets.SNOWFLAKE_WAREHOUSE }}
+          SNOWFLAKE_DATABASE: ${{ secrets.SNOWFLAKE_DATABASE }}
+          SNOWFLAKE_SCHEMA: ${{ secrets.SNOWFLAKE_SCHEMA }}
+        run: python api_service/leaderboard_export.py
