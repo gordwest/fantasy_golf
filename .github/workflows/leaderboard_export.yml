@@ -25,9 +25,9 @@ jobs:
 
       - name: Run leaderboard export
         env:
-          RAPIDAPI_KEY: ${{ secrets.RAPIDAPI_KEY }}
-          RAPIDAPI_HOST: ${{ secrets.RAPIDAPI_HOST }}
-          RAPIDAPI_BASE_URL: ${{ secrets.RAPIDAPI_BASE_URL }}
+          RAPIDAPI_KEY: ${{ secrets.RAPIDAPI_KEY || secrets.API_KEY }}
+          RAPIDAPI_HOST: ${{ secrets.RAPIDAPI_HOST || secrets.HOST }}
+          RAPIDAPI_BASE_URL: ${{ secrets.RAPIDAPI_BASE_URL || secrets.BASE_URL }}
           SNOWFLAKE_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT }}
           SNOWFLAKE_USER: ${{ secrets.SNOWFLAKE_USER }}
           SNOWFLAKE_PASSWORD: ${{ secrets.SNOWFLAKE_PASSWORD }}

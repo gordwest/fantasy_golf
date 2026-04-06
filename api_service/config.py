@@ -19,10 +19,31 @@ def load_local_secrets() -> dict:
 LOCAL_SECRETS = load_local_secrets()
 
 
-def _get_nested_secret(section: str, key: str, env_var: str, default: str | None = None) -> str | None:
-    # Check for direct env var name in TOML (flat structure)
-    value = LOCAL_SECRETS.get(env_var) or os.getenv(env_var) or default
-    return value
+def _get_nested_secret(
+    section: str,
+    key: str,
+    env_var: str,
+    *,
+    env_aliases: tuple[str, ...] = (),
+    default: str | None = None,
+) -> str | None:
+    # Support either a flat TOML layout or nested sections like [rapidapi] / [snowflake].
+    section_values = LOCAL_SECRETS.get(section, {})
+    if isinstance(section_values, dict):
+        nested_value = section_values.get(key)
+        if nested_value:
+            return nested_value
+
+    flat_value = LOCAL_SECRETS.get(env_var)
+    if flat_value:
+        return flat_value
+
+    for candidate in (env_var, *env_aliases):
+        env_value = os.getenv(candidate)
+        if env_value:
+            return env_value
+
+    return default
 
 
 def get_snowflake_config(
@@ -53,18 +74,32 @@ def get_rapidapi_config() -> dict[str, str]:
             "rapidapi",
             "base_url",
             "RAPIDAPI_BASE_URL",
+            env_aliases=("BASE_URL",),
             default="https://live-golf-data.p.rapidapi.com",
         ),
         "host": _get_nested_secret(
             "rapidapi",
             "host",
             "RAPIDAPI_HOST",
+            env_aliases=("HOST",),
             default="live-golf-data.p.rapidapi.com",
         ),
-        "api_key": _get_nested_secret("rapidapi", "api_key", "RAPIDAPI_KEY"),
+        "api_key": _get_nested_secret(
+            "rapidapi",
+            "api_key",
+            "RAPIDAPI_KEY",
+            env_aliases=("API_KEY",),
+        ),
     }
 
-    missing_parameters = [key.upper() for key, value in config.items() if not value]
+    missing_parameters = []
+    if not config["api_key"]:
+        missing_parameters.append("api_key (set RAPIDAPI_KEY or API_KEY)")
+    if not config["host"]:
+        missing_parameters.append("host (set RAPIDAPI_HOST or HOST)")
+    if not config["base_url"]:
+        missing_parameters.append("base_url (set RAPIDAPI_BASE_URL or BASE_URL)")
+
     if missing_parameters:
         missing_list = ", ".join(missing_parameters)
         raise ValueError(f"Missing required RapidAPI configuration: {missing_list}")
